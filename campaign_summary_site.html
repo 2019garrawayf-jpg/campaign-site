@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>社会課題キャンペーン集計</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; margin: 40px; }
+        h1 { color: #333; }
+        .graph { margin-top: 30px; }
+        .section { margin-bottom: 60px; }
+    </style>
+</head>
+<body>
+    <h1>社会課題キャンペーン集計（2022年9月〜）</h1>
+
+    <div class="section">
+        <h2>📊 入力件数（社会課題別）</h2>
+        <div id="bar-chart" class="graph"></div>
+    </div>
+
+    <div class="section">
+        <h2>📈 割合（％）</h2>
+        <div id="pie-chart" class="graph"></div>
+    </div>
+
+    <div class="section">
+        <h2>📝 アイデア評価基準</h2>
+        <ul>
+            <li>① 社会課題への関連性</li>
+            <li>② 実現可能性</li>
+            <li>③ 独創性・ユニークさ</li>
+            <li>④ 継続性・持続可能性</li>
+        </ul>
+    </div>
+
+    <script>
+        const labels = ['①人口減少', '②高齢化社会', '③教育改革', '④過疎化', '⑤安全保障', '⑥経済成長', '⑦日本文化・伝統の保護', '⑧移動の問題'];
+        const values = [456.0, 401.0, 817.0, 453.0, 164.0, 567.0, 517.0, 438.0];
+        const percentages = [11.95908733, 10.51665355, 21.42669814, 11.88040913, 4.301075269, 14.87018096, 13.55887752, 11.4870181];
+
+        Plotly.newPlot('bar-chart', [{
+            x: labels,
+            y: values,
+            type: 'bar',
+            marker: { color: '#4B9CD3' }
+        }], {
+            title: '社会課題別 入力件数',
+            xaxis: { title: 'カテゴリー' },
+            yaxis: { title: '件数' }
+        });
+
+        Plotly.newPlot('pie-chart', [{
+            labels: labels,
+            values: percentages,
+            type: 'pie'
+        }], {
+            title: '社会課題別 割合（％）'
+        });
+    </script>
+</body>
+</html>
