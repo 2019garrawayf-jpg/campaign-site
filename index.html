@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garrawy F｜みんなのアイデアから見る未来のカタチ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap');
+
+        :root {
+            --bg-color: #f8f9fa;
+            --main-text-color: #343a40;
+            --sub-text-color: #6c757d;
+            --accent-color-1: #a2d2ff;
+            --accent-color-2: #bde0fe;
+            --accent-color-3: #ffafcc;
+            --accent-color-4: #ffc8dd;
+            --accent-color-5: #cdb4db;
+            --card-bg-color: #ffffff;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--main-text-color);
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--accent-color-1), var(--accent-color-3));
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color-2), var(--accent-color-4));
+            border-radius: 2px;
+        }
+
+        .section-title p {
+            color: var(--sub-text-color);
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+        
+        /* Chart Section */
+        #chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: var(--card-bg-color);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        #chart-container .total-ideas {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--main-text-color);
+            margin-bottom: 20px;
+        }
+        
+        #chart-container .total-ideas span {
+            font-size: 3rem;
+            color: var(--accent-color-3);
+        }
+
+        /* Keyword Section */
+        .keyword-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .keyword-card {
+            background-color: var(--card-bg-color);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .keyword-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .keyword-card h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-left: 5px solid;
+            padding-left: 10px;
+        }
+        
+        .keyword-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .keyword-card li {
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .keyword-card li::before {
+            content: '✦';
+            color: var(--accent-color-3);
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .keyword-card li:last-child {
+            border-bottom: none;
+        }
+
+        /* Set border colors for cards */
+        .card-c1 h3 { border-color: #64b5f6; }
+        .card-c2 h3 { border-color: #81c784; }
+        .card-c3 h3 { border-color: #ffd54f; }
+        .card-c4 h3 { border-color: #ff8a65; }
+        .card-c5 h3 { border-color: #9575cd; }
+        .card-c6 h3 { border-color: #4db6ac; }
+        .card-c7 h3 { border-color: #f06292; }
+        .card-c8 h3 { border-color: #7986cb; }
+
+
+        /* Overlap Keywords Section */
+        .overlap-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .overlap-card {
+            background: var(--card-bg-color);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            width: 200px;
+            text-align: center;
+            border-top: 5px solid;
+        }
+        .overlap-card .term {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        .overlap-card .meaning {
+            font-size: 0.9rem;
+            color: var(--sub-text-color);
+        }
+
+        /* Analysis Table Section */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        .analysis-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .analysis-card-header {
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+        }
+        .analysis-card-body {
+            padding: 25px;
+        }
+        .analysis-card-body h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--main-text-color);
+            margin-top: 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #eee;
+        }
+        .analysis-card-body p, .analysis-card-body ul {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            color: var(--sub-text-color);
+        }
+        .analysis-card-body ul {
+            padding-left: 20px;
+        }
+
+        /* Conclusion Section */
+        .conclusion {
+            background: linear-gradient(135deg, var(--accent-color-2), var(--accent-color-4));
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+        }
+        .conclusion h3 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            text-align: center;
+            font-weight: 700;
+        }
+        .conclusion p {
+            opacity: 0.95;
+            font-size: 1.05rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--sub-text-color);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>みんなのアイデアから見る、未来のカタチ</h1>
+            <p>Garrawy Fに集まった3,813のビジネスアイデアを分析。<br>みんなが描く社会課題解決のビジョンを、一緒にのぞいてみませんか？</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section id="overview">
+            <div class="section-title">
+                <h2>アイデアの集まる場所</h2>
+                <p>どの社会課題に、どんな関心が寄せられているのでしょう？</p>
+            </div>
+            <div id="chart-container">
+                 <div class="total-ideas">総アイデア数：<span>3,813</span>件</div>
+                <canvas id="ideaChart"></canvas>
+            </div>
+        </section>
+
+        <section id="keywords">
+            <div class="section-title">
+                <h2>アイデアの源泉を探る、5つのキーワード</h2>
+                <p>各カテゴリで頻繁に登場した言葉たち。そこには課題解決のヒントが隠されています。</p>
+            </div>
+            <div class="keyword-grid">
+                <div class="keyword-card card-c1"><h3>① 人口減少</h3><ul><li>地域</li><li>移住</li><li>子育て</li><li>支援</li><li>活性化</li></ul></div>
+                <div class="keyword-card card-c2"><h3>② 高齢化社会</h3><ul><li>高齢者</li><li>介護</li><li>健康</li><li>地域</li><li>支援</li></ul></div>
+                <div class="keyword-card card-c3"><h3>③ 教育改革</h3><ul><li>教育</li><li>学習</li><li>AI</li><li>個別最適化</li><li>プログラミング</li></ul></div>
+                <div class="keyword-card card-c4"><h3>④ 過疎化</h3><ul><li>地域</li><li>過疎化</li><li>活性化</li><li>移住</li><li>空き家</li></ul></div>
+                <div class="keyword-card card-c5"><h3>⑤ 安全保障</h3><ul><li>安全保障</li><li>防災</li><li>サイバーセキュリティ</li><li>食料</li><li>エネルギー</li></ul></div>
+                <div class="keyword-card card-c6"><h3>⑥ 経済成長</h3><ul><li>経済成長</li><li>DX</li><li>スタートアップ</li><li>中小企業</li><li>グローバル</li></ul></div>
+                <div class="keyword-card card-c7"><h3>⑦ 日本文化・伝統の保護</h3><ul><li>伝統文化</li><li>継承</li><li>観光</li><li>職人</li><li>インバウンド</li></ul></div>
+                <div class="keyword-card card-c8"><h3>⑧ 移動の問題</h3><ul><li>移動</li><li>交通</li><li>自動運転</li><li>物流</li><li>過疎地域</li></ul></div>
+            </div>
+        </section>
+        
+        <section id="overlap">
+            <div class="section-title">
+                <h2>意外な共通点から見えてくる、課題解決の新たな視点</h2>
+                <p>カテゴリの垣根を越えて、繰り返し登場する言葉たち。それらは社会課題の根っこが繋がっている証です。</p>
+            </div>
+            <div class="overlap-container">
+                <div class="overlap-card" style="border-color: #ffafcc;">
+                    <div class="term">地域</div>
+                    <div class="meaning">課題が起こる現場であり、解決策が生まれる場所。コミュニティのハブ。</div>
+                </div>
+                <div class="overlap-card" style="border-color: #a2d2ff;">
+                    <div class="term">支援</div>
+                    <div class="meaning">個人や企業だけでは難しい課題を、社会全体で支えようとする意志の表れ。</div>
+                </div>
+                <div class="overlap-card" style="border-color: #cdb4db;">
+                    <div class="term">AI</div>
+                    <div class="meaning">人手不足解消や効率化の切り札。特に「教育」分野で強い期待が寄せられる。</div>
+                </div>
+                <div class="overlap-card" style="border-color: #bde0fe;">
+                    <div class="term">移住</div>
+                    <div class="meaning">都市と地方の新しい関係性を築き、人口問題や過疎化を解決する鍵。</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="typology">
+            <div class="section-title">
+                <h2>アイデアのカタチも、いろいろ。</h2>
+                <p>ビジネスアイデアはどんなタイプに分類できるのでしょう？</p>
+            </div>
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <div class="analysis-card-header" style="background: #64b5f6;">プラットフォーム型</div>
+                    <div class="analysis-card-body">
+                        <p>人と人、サービスと人をつなぐ「場」を提供するアイデア。教育改革や経済成長カテゴリで特に多く見られます。</p>
+                        <ul>
+                            <li>AI学習プラットフォーム</li>
+                            <li>企業間マッチングサイト</li>
+                            <li>MaaS（Mobility as a Service）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-card-header" style="background: #81c784;">サービス提供型</div>
+                    <div class="analysis-card-body">
+                        <p>具体的なサービスで直接課題を解決するアイデア。ほとんどのカテゴリで中心的な役割を担っています。</p>
+                         <ul>
+                            <li>移住支援サポート</li>
+                            <li>介護・見守りサービス</li>
+                            <li>DX導入コンサルティング</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-card-header" style="background: #ffd54f;">製品開発型</div>
+                    <div class="analysis-card-body">
+                        <p>新しいモノづくりで課題にアプローチするアイデア。高齢化社会や文化保護、安全保障など専門分野で目立ちます。</p>
+                        <ul>
+                            <li>見守りデバイス</li>
+                            <li>伝統工芸を活かした新商品</li>
+                            <li>防災システム</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="perception">
+            <div class="section-title">
+                <h2>みんなは、どう考えているんだろう？</h2>
+                <p>アイデアの背景にある、テクノロジーや社会課題に対するみんなの想いを読み解きます。</p>
+            </div>
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <div class="analysis-card-header" style="background: #9575cd;">テクノロジーへの認識</div>
+                    <div class="analysis-card-body">
+                        <h4>期待：未来を創るパートナー</h4>
+                        <p>AIやIoTなどを活用し、人手不足の解消や生産性向上、個別最適化されたサービスの実現に大きな期待が寄せられています。</p>
+                        <h4>懸念：誰も置き去りにしないために</h4>
+                        <p>デジタルに不慣れな人への配慮や、AIによる雇用の喪失、技術の安全性など、社会実装にあたっての課題も冷静に見つめています。</p>
+                    </div>
+                </div>
+                 <div class="analysis-card">
+                    <div class="analysis-card-header" style="background: #f06292;">社会課題への認識</div>
+                    <div class="analysis-card-body">
+                        <h4>原因：根深く、そして複雑に</h4>
+                        <p>経済的な不安、東京一極集中、労働環境、後継者不足など、課題の根本原因を構造的な問題として捉えています。</p>
+                        <h4>想い：自分ごととして、未来のために</h4>
+                        <p>単なる問題指摘にとどまらず、地域コミュニティの衰退や伝統の喪失を憂い、次世代のためにより良い社会を築きたいという強い意志が感じられます。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="conclusion">
+            <div class="section-title">
+                <h2 style="color: var(--main-text-color);">全体考察：アイデアの先に広がる、希望の景色</h2>
+                <p style="color: var(--sub-text-color);">最後に、3,813のアイデアから見えてきた未来への希望をまとめます。</p>
+            </div>
+             <div class="conclusion">
+                <h3>ひとりひとりの創造性が、社会を動かす力になる。</h3>
+                <p>今回の分析から見えてきたのは、多くの人が社会課題を「自分ごと」として捉え、テクノロジーや新しい仕組みを前向きに活用しながら、未来をより良くしようと真剣に考えている姿でした。</p>
+                <p>課題は複雑で根深いかもしれません。しかし、ここに集まった無数のアイデアは、私たちが決して無力ではないこと、そして創造性こそが未来を切り拓く最大の希望であることを教えてくれます。</p>
+                <p>Garrawy Fは、これからも皆さんのアイデアという名の「種」が芽吹き、やがて大きな花を咲かせるための、豊かな土壌であり続けたいと願っています。</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Garrawy F. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const ctx = document.getElementById('ideaChart').getContext('2d');
+        const ideaChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['③教育改革', '⑥経済成長', '⑦日本文化・伝統の保護', '①人口減少', '④過疎化', '⑧移動の問題', '②高齢化社会', '⑤安全保障'],
+                datasets: [{
+                    label: 'アイデア件数',
+                    data: [817, 567, 517, 456, 453, 438, 401, 164],
+                    backgroundColor: [
+                        '#ffd54f', // Education
+                        '#4db6ac', // Economy
+                        '#f06292', // Culture
+                        '#64b5f6', // Population
+                        '#ff8a65', // Depopulation
+                        '#7986cb', // Mobility
+                        '#81c784', // Aging Society
+                        '#9575cd'  // Security
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 3,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: "'Noto Sans JP', sans-serif",
+                                size: 12
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    const percentage = (context.raw / total * 100).toFixed(1);
+                                    label += `${context.raw}件 (${percentage}%)`;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
